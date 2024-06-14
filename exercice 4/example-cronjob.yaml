@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: example-cronjob
+spec:
+  schedule: "*/1 * * * *" # S'exécute toutes les minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: example
+            image: busybox
+            command: ["sh", "-c", "echo 'Hello, Kubernetes CronJob!' > /mnt/data/cronjob.txt"]
+            volumeMounts:
+            - mountPath: /mnt/data
+              name: example-storage
+          restartPolicy: OnFailure
+          volumes:
+          - name: example-storage
+            persistentVolumeClaim:
+              claimName: example-pvc
